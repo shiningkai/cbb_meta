@@ -6,13 +6,14 @@
 > <font color="red">***Todo:***</font>
 相关模块需各专业负责人进一步完善
 
-## 根标签定义
+## 标签定义
+### 根标签定义
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
 ```
 
-## Application
+### Application
 > 应用标签是对应用程序的描述
 
 ```xml
@@ -24,11 +25,6 @@
     icon="vf3.ico"
     theme="light"
 >
-    <Metadata></Metadata>
-    <Containers></Containers>
-    <Components></Components>
-    <Styles></Styles>
-    <Behaviors></Behaviors>
 </Application>
 ```
 
@@ -42,41 +38,42 @@
 |5|icon|图标||
 |6|theme|主题||
 
-***子标签定义***
-|序号|标签|说明|示例|
-|:-:|:-|:-|:-|
-|1|Metadata|元数据||
-|2|Containers|布局容器||
-|3|Components|组件||
-|4|Styles|主题样式||
-|5|Behaviors|交互行为||
-
 
 ### Metadata
-> 元数据定义是对结构体、常量、变量、信号与槽的描述
-
+> 元数据定义是对常量、变量、结构体的描述
 ```xml
-<Class name="DataProcessor">
-    <Signals>
-        <Signal name="processing" version="1.2" deprecated="true"/>
-        <Signal name="update">
-            <Param type="struct" name="data">
-                <Param type="string" name="name">
-                <Param type="number" name="type">
-            </Param>
-            <Param type="number" name="timestamp"/>
-        </Signal>
-    </Signals>
-    <Slots>
-        <Slot name="processing">
-            <Param type="string" name="path"/>
-        </Slot>
-        <Slot name="save" returnType="bool">
-            <Param type="struct" name="data"/>
-        </Slot>
-    </Slots>
-</Class>
+<Metadata>
+    <!-- 常量 -->
+    <Const type="string" name="NoLogin">未登录</Const>
+    <!-- 变量 -->
+    <Var type="string" name="userName">未知用户</Var>
+    <!-- 结构体 -->
+    <Struct name="CommonRow">
+        <Var type="integer" name="id" />
+        <Var type="string" name="guid" />
+        <Var type="string" name="name" />
+    </Struct>
+    <!-- 枚举 -->
+    <Enum name="LOCAL">
+        <Const type="integer" value="0">zh-CN</Const>
+        <Const type="integer" value="1">en-US</Const>
+    </Enum>
+</Metadata>
 ```
+
+
+***数据类型***
+|No|Meta|C++|TypeScript|
+|:-:|:-|:-|:-|
+|1|Integer|Integer|Number|
+|2|Float|Float|Number|
+|3|String|String|String|
+|4|Boolean|Boolean|Boolean|
+|5|Vector|Vector|T[]|
+|6|Tuple|Tuple|[T1, T2]|
+|7|Struct|Struct|Interface|
+|8|Enum|Enum|Enum|
+
 
 
 ### <font color="yellow">Containers</font>
@@ -84,12 +81,6 @@
 
 ```xml
 <Containers>
-    <ColumnContainer>
-    </ColumnContainer>
-    <RowContainer>
-    </RowContainer>
-    <GridContainer>
-    </GridContainer>
 </Containers>
 ```
 
@@ -120,6 +111,7 @@
 |:-:|:-|:-|:-|
 |1|spacing|间距|5px|
 |2|direction|子项排列方向|默认positive上下,reverse下上|
+|3|dividerDraggable|分隔线是否可拖动|false|
 
 #### <font color="yellow">RowContainer : Container</font>
 
@@ -128,6 +120,7 @@
 |:-:|:-|:-|:-|
 |1|spacing|间距|5px|
 |2|direction|子项排列方向|默认positive左右,reverse右左|
+|3|dividerDraggable|分隔线是否可拖动|false|
 
 #### <font color="yellow">GridContainer : Container</font>
 
@@ -142,10 +135,11 @@
 
 
 ### <font color="yellow">Components</font>
-> 组件定义是对组件的描述，支持基础组件和自定义组件
+> 组件定义是对组件的描述，支持基础组件和自定义组件。每个组件的信号Signal与槽Slot定义在组件内，对外需提供说明。
 
 ```xml
 <Components>
+    <!-- 原子组件，这里只是示范，不需要定义 -->
     <Breadcrumb name="面包屑" />
     <Label name="标签" />
     <Spring name="弹簧" />
@@ -178,13 +172,13 @@
 
 ```xml
 <Styles>
+    <!-- 主题 -->
     <Theme name="light">
         <ColorPalette primary="#2C3E50" secondary="#3498DB"/>
-        <Typography baseSize="16px" ratio="1.333"/>
     </Theme>
+    <!-- 原子样式 -->
     <AtomicStyles>
-        <SpacingClass name="m-1" value="8px"/>
-        <ShadowClass name="elevation-2" value="0 2px 4px #336699"/>
+        <BorderClass name="border" color="primary"/>
     </AtomicStyles>
 </Styles>
 ```
@@ -195,10 +189,83 @@
 > 交互行为定义是对信号与槽的连接关系的描述
 
 ```xml
-<Class name="DataProcessor">
-
-</Class>
+<Behaviors>
+</Behaviors>
 ```
 
+## 完整示例
 
+### 智慧变频电源试验系统
 
+```xml
+<?xml version="1.0" encoding="utf-8" xmlns:MNT="app.monitor" xmlns:HIS="app.history"?>
+
+<Metadata>
+    <Const type="string" name="title">VF-3串谐试验装置</Const>
+    <Const type="string" name="description">D03-01-智慧变频电源试验系统</Const>
+    <Var type="integer" name="ratio">1</Var>
+    <Struct name="Station">
+        <Var type="integer" name="id" />
+        <Var type="string" name="guid" />
+        <Var type="string" name="name" />
+    </Struct>
+    <Enum name="LOCAL">
+        <Const type="integer" value="0">zh-CN</Const>
+        <Const type="integer" value="1">en-US</Const>
+    </Enum>
+    <Vector type="Station" name="stations"></Vector>
+</Metadata>
+
+<Application
+    version="1.0"
+    locale="zh-CN"
+    title="VF-3串谐试验装置"
+    description="D03-01-智慧变频电源试验系统"
+    icon="vf3.ico"
+    theme="light"
+>
+    <RowContainer>
+        <Header />
+        <Navigation type="horizontal"/>
+        <Breadcrumb />
+        <Views />
+        <SieyuanFooter />
+    </RowContainer>
+</Application>
+
+<View route="app/monitor">
+    <ColumnContainer id="cc" margin="10px">
+        <MNT:PRPS dataBinding=""/>
+    </ColumnContainer>
+</View>
+
+<Components>
+    <!-- 可视化类 -->
+    <Header path="Components/layout/Header_v1.0"/>
+    <Footer path="Components/layout/Footer_v1.0"/>
+    <MNT:PRPS path="Components/chart/PRPS_GL_v1.0"/>
+    <HIS:PRPS path="Components/chart/PRPS_GL_v1.2"/>
+    <SieyuanFooter>
+        <Container:RowContainer alignHorizontal="center" height="80px" margin="20px">
+            <Image src="images/logo/sieyuan.svg"/>
+            <Label>思源电气</Label>
+        </RowContainer>
+    </SieyuanFooter>
+    <RatioDialog id="dlg1" title="设置励磁变比" icon="dlg1.ico" width="640px" height="480px">
+        <ColumnContainer>
+            <Container>
+                <Label>请输入励磁变比</Label>
+                <IntegerBox id="ratio1" meta="ratio" min="1" max="9"><IntegerBox>
+            </Container>
+            <Container>
+                <Confirm id="confirm1" yesText="确定" noText="取消"/>
+            </Container>
+        </ColumnContainer>
+    </RatioDialog>
+    <!-- 数据类 -->
+</Components>
+
+<Behaviors>
+    <Connection sender="cc" signal="init" receive="dlg1" slot="show" />
+</Behaviors>
+```
